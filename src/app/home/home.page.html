@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Cryptocurrency</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (loading()) {
+    <div class="center">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Memuat data...</p>
+    </div>
+  } @else if (error() && coins().length === 0) {
+    <div class="center">
+      <p>{{ error() }}</p>
+      <ion-button (click)="retry()">Coba Lagi</ion-button>
+    </div>
+  } @else {
+    <ion-list>
+      <ion-list-header>
+        <span class="col-rank">Rank</span>
+        <span class="col-name">Name / Symbol</span>
+        <span class="col-price">Price (USD)</span>
+      </ion-list-header>
+
+      @for (coin of coins(); track coin.id) {
+        <ion-item>
+          <div class="rank" slot="start">{{ coin.rank }}</div>
+          <ion-label>
+            <h2>{{ coin.name }}</h2>
+            <p>{{ coin.symbol }}</p>
+          </ion-label>
+          <ion-note slot="end" class="price">${{ coin.price_usd | number: priceFormat(coin.price_usd) }}</ion-note>
+        </ion-item>
+      }
+    </ion-list>
+  }
+</ion-content>
